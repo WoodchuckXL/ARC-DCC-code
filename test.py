@@ -8,7 +8,7 @@ import cv2
 #""" #ArUco identification Testing
 ar.initArUcoReader()
 
-img = cv2.imread('/Users/james/Documents/School/ARC/Tello3.9/src/balloon_mockup.png', cv2.IMREAD_COLOR)
+img = cv2.imread('/Users/james/Documents/School/ARC/Tello3.9/src/testimg/balloon_mockup.png', cv2.IMREAD_COLOR)
 markerData = ar.checkForArUco(img)
 corner, ids, rejected = markerData
 #print(corner)
