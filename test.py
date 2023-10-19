@@ -1,19 +1,15 @@
-import numpy as np
-import arucoReader as ar
+from arucoReader import ArucoReader
 import identifyColor as ic
 import cv2
 
-
-
 #""" #ArUco identification Testing
-ar.initArUcoReader()
+ar = ArucoReader()
 
-img = cv2.imread('/Users/james/Documents/School/ARC/Tello3.9/src/testimg/balloon_mockup.png', cv2.IMREAD_COLOR)
+img = cv2.imread('src/testimg/balloon_mockup.png', cv2.IMREAD_COLOR)
 markerData = ar.checkForArUco(img)
 corner, ids, rejected = markerData
 #print(corner)
 
-getTagColors(img, markerData)
 #"""
 
 """ #Color identification and masking

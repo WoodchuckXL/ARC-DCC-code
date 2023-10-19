@@ -1,8 +1,9 @@
 # Draw arUco Tag numbers
 
 from djitellopy import Tello
-import arucoReader
+from arucoReader import ArucoReader
 import cv2
+import time
 
 u = 20
 speed = 20
@@ -147,20 +148,26 @@ tello = Tello()
 
 tello.connect(True)
 
+tello.streamon()
+
 tello.takeoff()
 
 tello.move_up(50)
 
-tello.streamon()
+ar = ArucoReader()
 
-arucoReader.initArUcoReader()
-
+#"""
 while True:
     frame = tello.get_frame_read().frame
-    cv2.imshow('tello_cam', frame)
-    markerData = arucoReader.checkForArUco(frame)
-    if markerData is not None:
-        flyNumPattern(markerData[1][0], tello)
+    if frame is not None:
+        cv2.imshow("tello", frame)
+        #"""
+        markerData = ar.checkForArUco(frame)
+        if markerData is not None:
+            flyNumPattern(markerData[1][0][0], tello)
+            break
+        #"""
     if (cv2.waitKey(1) == 27): break
+#"""
 
 tello.land()

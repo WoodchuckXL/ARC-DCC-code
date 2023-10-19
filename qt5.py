@@ -13,7 +13,7 @@ tello.move_up(50)
 
 tello.streamon()
 
-#takes selfie
+# Takes selfie
 selfie = tello.get_frame_read().frame
 
 tello.streamoff()

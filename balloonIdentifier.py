@@ -65,7 +65,7 @@ def main():
 
     tello = Tello()
 
-    tello.connect(False)
+    tello.connect(True)
 
     battery = tello.get_battery()
     print("Battery life is " + str(tello.get_battery()) + "%.")
@@ -75,13 +75,12 @@ def main():
 
     
     tello.streamon()
-
     balloon = BalloonIdentifier()
 
     while True:
         frame = tello.get_frame_read().frame
         
-        balloon.identifyBalloon(frame)
+        #balloon.identifyBalloon(frame)
 
         cv2.imshow('tello_cam', frame)
         if (cv2.waitKey(1) == 27): break
