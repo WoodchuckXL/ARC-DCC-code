@@ -158,7 +158,6 @@ ar = ArucoReader()
 while True:
     frame = tello.get_frame_read().frame
     if frame is not None:
-        cv2.imshow("tello", frame)
         markerData = ar.checkForArUco(frame)
         if markerData is not None:
             flyNumPattern(markerData[1][0][0], tello)
