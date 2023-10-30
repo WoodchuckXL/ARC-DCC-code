@@ -151,8 +151,6 @@ tello.streamon()
 
 tello.takeoff()
 
-tello.move_up(50)
-
 ar = ArucoReader()
 
 while True:
