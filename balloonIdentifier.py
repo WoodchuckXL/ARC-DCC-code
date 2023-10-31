@@ -1,7 +1,7 @@
 from djitellopy import Tello
 import cv2
 from cv2 import aruco
-import time
+import numpy
 from arucoReader import ArucoReader
 from identifyColor import ColorIdentifier
 
@@ -12,22 +12,23 @@ class BalloonIdentifier:
 
     def _getTagColors(self, img, markerData) -> str:
         corners, ids, rejected = markerData
+
+        colors = [""] * len(ids)
         
         for i in range(len(ids)):
-            print("The balloon with marker", i, "is", self.getColor(img, corners[i][0]))
-        return None
+            colors[i] = self._getColor(img, corners[i][0])
+
+        return tuple(colors)
 
     def _getColor(self, img, corners) -> str:
 
-        length = corners[1][0] - corners[0][0]
-        height = corners[3][1] - corners[0][1]
-
-        #print(length, height)
+        length = ( (corners[1][0] - corners[0][0])**2 + (corners[1][1] - corners[0][1])**2 )**0.5 
+        height = ( (corners[3][0] - corners[0][0])**2 + (corners[3][1] - corners[0][1])**2 )**0.5
         
-        percent = 0.025
+        percent = 0.15
 
-        horOffset = [-1, 1, 1, -1]
-        verOffset = [-1, -1, 1, 1]
+        horOffset = [-1, 1, 0, 0]
+        verOffset = [0, 0, 1, 1]
 
         cornerColors = [''] * 4
         for i in range(4):
@@ -37,6 +38,8 @@ class BalloonIdentifier:
 
             pixel = img[y, x]
             cornerColors[i] = self.colorReader.getColorStr(pixel)
+
+        print(length, height, "\n", corners, "\n", cornerColors)
 
         # Create a dictionary to store the count of each color
         colorDict = {}
@@ -57,7 +60,9 @@ class BalloonIdentifier:
     def identifyBalloon(self, img):
         markerData = self.tagReader.checkForArUco(img)
         if markerData is not None:
-            self._getTagColors(img, markerData)
+            colors = self._getTagColors(img, markerData)
+            return markerData + (colors,)
+        return None
 
     
 
@@ -80,7 +85,8 @@ def main():
     while True:
         frame = tello.get_frame_read().frame
         
-        #balloon.identifyBalloon(frame)
+        if frame is not None:
+            print(balloon.identifyBalloon(frame))
 
         cv2.imshow('tello_cam', frame)
         if (cv2.waitKey(1) == 27): break
