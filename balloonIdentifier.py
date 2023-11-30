@@ -1,7 +1,5 @@
 from djitellopy import Tello
 import cv2
-from cv2 import aruco
-import numpy
 from arucoReader import ArucoReader
 from identifyColor import ColorIdentifier
 
@@ -25,7 +23,7 @@ class BalloonIdentifier:
         length = ( (corners[1][0] - corners[0][0])**2 + (corners[1][1] - corners[0][1])**2 )**0.5 
         height = ( (corners[3][0] - corners[0][0])**2 + (corners[3][1] - corners[0][1])**2 )**0.5
         
-        percent = 0.15
+        percent = 0.33
 
         horOffset = [-1, 1, 0, 0]
         verOffset = [0, 0, 1, 1]
@@ -36,10 +34,13 @@ class BalloonIdentifier:
             x = int(corners[i][0] + (horOffset[i] * percent) * length)
             y = int(corners[i][1] + (verOffset[i] * percent) * height)
 
-            pixel = img[y, x]
-            cornerColors[i] = self.colorReader.getColorStr(pixel)
-
-        print(length, height, "\n", corners, "\n", cornerColors)
+            if x >= len(img[0]) or x < 0 or y >= len(img) or y < 0:
+                cornerColors[i] = None
+            else:
+                pixel = img[y, x]
+                cornerColors[i] = self.colorReader.getColorStr(pixel)
+                print(cornerColors[i])
+        #print(length, height, "\n", corners, "\n", cornerColors)
 
         # Create a dictionary to store the count of each color
         colorDict = {}
@@ -48,14 +49,18 @@ class BalloonIdentifier:
         for color in cornerColors:
             if color in colorDict:
                 colorDict[color] += 1
-            else:
+            elif color is not None:
                 colorDict[color] = 1
 
         # Check for colors with a count of 3 or more
+        maxCount = 0
+        mostCommonColor = None
         for color, count in colorDict.items():
-            if count >= 3:
-                return color
-        return None
+            if count > maxCount:
+                mostCommonColor = color
+                maxCount = count
+
+        return mostCommonColor
 
     def identifyBalloon(self, img):
         markerData = self.tagReader.checkForArUco(img)

@@ -4,10 +4,14 @@ import numpy as np
 #Color range dictionary
 colorRanges = {
     'red' : {
-        'loweru' : np.array([146,64,64]),
-        'upperu' : np.array([255,255,255]),
-        'lowerl' : np.array([0,64,64]),
-        'upperl' : np.array([7,255,255]) 
+        'loweru' : np.array([146,150,64]),
+        'upperu' : np.array([255,255,199]),
+        'lowerl' : np.array([0,150,64]),
+        'upperl' : np.array([7,255,199]) 
+    },
+    'pink' : {
+        'lower' : np.array([140,50,150]),
+        'upper' : np.array([170,255,255]),
     },
     'orange' : {
         'lower' : np.array([8,64,64]),
@@ -17,21 +21,25 @@ colorRanges = {
         'lower' : np.array([21,64,64]),
         'upper' : np.array([31,255,255]) 
     },
-    'green' : {
-        'lower' : np.array([32,64,64]),
+    'light green' : {
+        'lower' : np.array([32,64,170]),
         'upper' : np.array([82,255,255]) 
-    },  
-    'blue' : {
-        'lower' : np.array([83,64,64]),
-        'upper' : np.array([130,255,255]) 
+    },
+    'dark green' : {
+        'lower' : np.array([32,64,64]),
+        'upper' : np.array([82,255,169]) 
+    },
+    'light blue' : {
+        'lower' : np.array([83,64,170]),
+        'upper' : np.array([120,160,255]) 
+    },
+    'dark blue' : {
+        'lower' : np.array([83,160,64]),
+        'upper' : np.array([120,255,255]) 
     },
     'purple' : {
-        'lower' : np.array([131,64,64]),
+        'lower' : np.array([121,30,64]),
         'upper' : np.array([145,255,255]) 
-    },
-    'white' : {
-        'lower' : np.array([0,0,192]),
-        'upper' : np.array([255,64,255]) 
     },
     'black' : {
         'lower' : np.array([0,0,0]),
@@ -63,11 +71,11 @@ class ColorIdentifier:
     def getColorStr(self, color) -> str:
         colorArr = np.uint8([[color]])
         hsv = cv2.cvtColor(colorArr, cv2.COLOR_RGB2HSV)[0][0]
-        print(colorArr, type(colorArr), hsv, type(hsv))
+        print(hsv)
         for key in colorRanges.keys():
             if (key == 'red'):
                 if (all(hsv >= colorRanges['red']['loweru']) & all(hsv <= colorRanges['red']['upperu'])) | (all(hsv >= colorRanges['red']['lowerl']) & all(hsv <= colorRanges['red']['upperl'])): 
                     return key
             else:
                 if (all(hsv >= colorRanges[key]['lower']) & all(hsv <= colorRanges[key]['upper'])): return key
-        return 'gray'
+        return None
